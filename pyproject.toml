@@ -8,3 +8,8 @@ dependencies = [
     "fastapi[standard]>=0.115.12",
     "sqlmodel>=0.0.24",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.11",
+]
