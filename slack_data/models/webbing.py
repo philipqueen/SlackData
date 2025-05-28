@@ -10,7 +10,7 @@ class BaseWebbing(SQLModel):
     release_date: str | None = None
     material: str # TODO: Will Enum work here? List of Enums?
     width: int
-    weight: int | None = None # g/m
+    weight: float | None = None # g/m
     breaking_strength: float | None = None # kN
     stretch: str | None = None # like [{"kn":0, "percent": 0.0}, {"kn": 10, "percent": 14.97}]
     isa_certified: bool = False
