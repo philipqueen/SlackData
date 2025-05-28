@@ -17,6 +17,7 @@ class BaseWebbing(SQLModel):
     classification: str | None = None # TODO: Enum for type A+, A, B, C
     colors: str | None = None # Comma separated list of colors
     description: str | None = None
+    version:str | None = None # Version indicating which batch data is from TODO: how to keep track of this?
     notes: str | None = None
 
 class Webbing(BaseWebbing, table=True):
