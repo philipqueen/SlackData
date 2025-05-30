@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Path
 from sqlmodel import select
 
 from slack_data.database import SessionDep
@@ -22,7 +22,7 @@ def create_webbing(webbing: WebbingCreate, session: SessionDep):
 @webbing_router.get("/", response_model=list[Webbing])
 def read_webbings(
     session: SessionDep,
-    offset: int = 0,
+    offset: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(le=100)] = 10,
 ):
     heroes = session.exec(
@@ -31,7 +31,7 @@ def read_webbings(
     return heroes
 
 @webbing_router.get("/{webbing_id}", response_model=Webbing)
-def read_webbing(webbing_id: int, session: SessionDep):
+def read_webbing(webbing_id: Annotated[int, Path(gt=0)], session: SessionDep):
     webbing = session.get(Webbing, webbing_id)
     if not webbing:
         raise HTTPException(status_code=404, detail=f"Webbing {webbing_id} not found")
@@ -39,7 +39,7 @@ def read_webbing(webbing_id: int, session: SessionDep):
 
 @webbing_router.patch("/{webbing_id}", response_model=Webbing)
 def update_webbing(
-    webbing_id: int,
+    webbing_id: Annotated[int, Path(gt=0)],
     webbing: WebbingUpdate,
     session: SessionDep
 ):
@@ -57,7 +57,7 @@ def update_webbing(
     return db_webbing
 
 @webbing_router.delete("/{webbing_id}")
-def delete_webbing(webbing_id: int, session: SessionDep):
+def delete_webbing(webbing_id: Annotated[int, Path(gt=0)], session: SessionDep):
     db_webbing = session.get(Webbing, webbing_id)
     if not db_webbing:
         raise HTTPException(status_code=404, detail=f"Webbing {webbing_id} not found")
