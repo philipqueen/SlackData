@@ -1,3 +1,4 @@
+from pydantic import computed_field
 from sqlmodel import Field, Relationship, SQLModel
 
 class BaseBrands(SQLModel):
@@ -17,6 +18,21 @@ class BaseBrands(SQLModel):
 class Brand(BaseBrands, table=True):
     id: int | None = Field(default=None, primary_key=True)
     webbing: list["Webbing"] = Relationship(back_populates="brand")
+    
+    @computed_field
+    def webbings(self) -> list[str]:
+        """
+        Computed field to get the names of all webbings associated with this brand.
+        """
+        return [webbing.name for webbing in self.webbing]
+    
+class BrandPublic(BaseBrands):
+    """
+    Model for public brand data.
+    """
+
+    webbings: list[str]
+
 
 class BrandCreate(BaseBrands):
     """
