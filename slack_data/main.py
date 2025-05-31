@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from sqlmodel import select, text
+from sqlmodel import select
 
 from slack_data.database import get_session, create_db_and_tables
 from slack_data.load_webbings import load_webbings
+from slack_data.api.routers.brand_router import brand_router
 from slack_data.api.routers.webbing_router import webbing_router
 from slack_data.models.webbing import Webbing
 
@@ -22,6 +23,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(webbing_router)
+app.include_router(brand_router)
 
 @app.get("/")
 def root():

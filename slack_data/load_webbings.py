@@ -1,8 +1,11 @@
 import json
 from pathlib import Path
 
+from sqlmodel import select
+
 from slack_data.database import SessionDep
-from slack_data.models.webbing import Webbing, WebbingCreate
+from slack_data.models.brands import Brand, BrandCreate
+from slack_data.models.webbing import Material, Webbing, WebbingCreate
 
 
 WEBBING_FILE = Path(__file__).parent.parent / "webbings.json"
@@ -37,25 +40,74 @@ def clean_webbing_data(webbing: dict) -> dict:
 
 def add_webbings_to_db(webbings: list[dict], session: SessionDep) -> None:
     """
-    Add the loaded webbing data to the database session.
+    Add the loaded webbing and branddata to the database session.
     """
+    brand_cache = {}
 
     for webbing in webbings:
+        brand_id, brand_cache = get_brand(session, brand_cache, webbing)
+
+        material = get_material_type(str(webbing.get("materialType", "")))
+
         webbing_create = WebbingCreate(
             name=str(webbing.get("name")),
-            brand=str(webbing.get("brand")),
-            material=str(webbing.get("materialType")),
+            brand_id=brand_id,
+            material=material,
             width=int(webbing.get("width", 0)),
             weight=float(webbing.get("weight", 0)),
             breaking_strength=webbing.get("breakingStrength"),
             stretch=webbing.get("stretch"),
         )
         db_webbing = Webbing.model_validate(webbing_create)
-        print(f"Adding webbing: {db_webbing.name} by {db_webbing.brand}")
+        db_webbing.brand = session.get(Brand, brand_id)
+        print(f"Adding webbing: {db_webbing.name} by {db_webbing.brand.name}")
         session.add(db_webbing)
 
     session.commit()
     session.refresh(db_webbing)
+
+def get_brand(session: SessionDep, brand_cache: dict[str, int], webbing: dict) -> tuple[int,dict]:
+    brand_name = str(webbing.get("brand"))
+    if brand_name not in brand_cache:
+        # get brand_id from the database or create it if it doesn't exist
+        statement = select(Brand.id).where(Brand.name == brand_name)
+        result = session.exec(statement).first()
+        if result is None:
+            # Create a new brand entry if it doesn't exist
+            brand_create = BrandCreate(name=brand_name)
+            db_brand = Brand.model_validate(brand_create)
+            print(f"Adding brand: {db_brand.name}")
+            session.add(db_brand)
+            session.commit()
+            session.refresh(db_brand)
+            brand_id = db_brand.id
+        else:
+            brand_id = result
+
+        if brand_id is None:
+            raise ValueError(f"Brand ID for '{brand_name}' could not be determined.")
+        
+        brand_cache[brand_name] = brand_id
+    brand_id = brand_cache[brand_name]
+    return brand_id, brand_cache
+
+def get_material_type(material: str) -> Material:
+    """
+    Convert the material string to a Material enum.
+    """
+    material = material.lower()
+    if "pes/polyamid" in material:
+        return Material.HYBRID
+    elif "nylon" in material or "polyamid" in material:
+        return Material.NYLON
+    elif "polyester" in material or "pes" in material:
+        return Material.POLYESTER
+    elif "dyneema" in material:
+        return Material.DYNEEMA
+    elif "vectran" in material:
+        return Material.VECTRAN
+    else:
+        return Material.OTHER
 
 def load_webbings(session: SessionDep) -> None:
     """
