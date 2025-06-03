@@ -1,21 +1,27 @@
+# SlackData
+
+SlackData is a database of slackline gear, inspired by [SlackDB](https://slackdb.com/).
+
+SlackData is open source, with an open API to allow other tools to use the database.
+
+The project is still in it's early stages, so currently the only option is to run the backend locally.
+
 ## Backend
 
 ### Installation
 
 1. Create and activate a new python environment:
-- uv: 
+- with uv: 
     1. `uv venv`
     2. `source venv/bin/activate`
 
-- python
+- with standard python
     1. `python3 -m venv venv`
     2. `source venv/bin/activate`
 
 2. Install dependencies
-- uv:
-    1. `uv sync`
-- python:
-    1. `pip install '-e.[dev]'`
+- for uv: `uv sync`
+- for python: `pip install '-e.[dev]'`
 
 ### Running
 
@@ -26,3 +32,4 @@
 3. Run server
     - `fastapi dev main.py`
 4. Open browser and go to URL printed in terminal
+    - Append `/docs` to see the interactive API docs
