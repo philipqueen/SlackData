@@ -20,6 +20,7 @@ class BaseBrands(SQLModel):
 class Brand(BaseBrands, table=True):
     id: int | None = Field(default=None, primary_key=True)
     webbing: list["Webbing"] = Relationship(back_populates="brand")
+    weblock: list["Weblock"] = Relationship(back_populates="brand")
     
     @computed_field
     def webbings(self) -> list[str]:
@@ -27,6 +28,15 @@ class Brand(BaseBrands, table=True):
         Computed field to get the names of all webbings associated with this brand.
         """
         return [webbing.name for webbing in self.webbing]
+    
+    @computed_field
+    def weblocks(self) -> list[str]:
+        """
+        Computed field to get the names of all weblocks associated with this brand.
+        """
+        return [weblock.name for weblock in self.weblock]
+    
+
     
 class BrandPublic(BaseBrands):
     """

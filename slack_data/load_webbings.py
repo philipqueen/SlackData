@@ -5,7 +5,7 @@ from sqlmodel import select
 
 from slack_data.database import SessionDep
 from slack_data.models.brands import Brand, BrandCreate
-from slack_data.models.webbing import Material, Webbing, WebbingCreate
+from slack_data.models.webbing import FiberMaterial, Webbing, WebbingCreate
 
 
 WEBBING_FILE = Path(__file__).parent.parent / "webbings.json"
@@ -91,23 +91,23 @@ def get_brand(session: SessionDep, brand_cache: dict[str, int], webbing: dict) -
     brand_id = brand_cache[brand_name]
     return brand_id, brand_cache
 
-def get_material_type(material: str) -> Material:
+def get_material_type(material: str) -> FiberMaterial:
     """
     Convert the material string to a Material enum.
     """
     material = material.lower()
     if "pes/polyamid" in material:
-        return Material.HYBRID
+        return FiberMaterial.HYBRID
     elif "nylon" in material or "polyamid" in material:
-        return Material.NYLON
+        return FiberMaterial.NYLON
     elif "polyester" in material or "pes" in material:
-        return Material.POLYESTER
+        return FiberMaterial.POLYESTER
     elif "dyneema" in material:
-        return Material.DYNEEMA
+        return FiberMaterial.DYNEEMA
     elif "vectran" in material:
-        return Material.VECTRAN
+        return FiberMaterial.VECTRAN
     else:
-        return Material.OTHER
+        return FiberMaterial.OTHER
 
 def load_webbings(session: SessionDep) -> None:
     """

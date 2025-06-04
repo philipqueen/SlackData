@@ -6,6 +6,7 @@ from slack_data.database import get_session, create_db_and_tables
 from slack_data.load_webbings import load_webbings
 from slack_data.api.routers.brand_router import brand_router
 from slack_data.api.routers.webbing_router import webbing_router
+from slack_data.api.routers.weblock_router import weblock_router
 from slack_data.models.webbing import Webbing
 
 
@@ -24,6 +25,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(webbing_router)
 app.include_router(brand_router)
+app.include_router(weblock_router)
 
 @app.get("/")
 def root():
