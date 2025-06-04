@@ -3,9 +3,10 @@ from pydantic import computed_field
 from sqlmodel import Field, Relationship, SQLModel
 
 from slack_data.utilities.currencies import Currency
+from slack_data.utilities.isa_warnings import ISAWarning
 
 
-class Material(str, Enum):
+class FiberMaterial(str, Enum):
     NYLON = "Nylon"
     POLYESTER = "Polyester"
     DYNEEMA = "Dyneema"
@@ -26,13 +27,14 @@ class BaseWebbing(SQLModel):
     """
     name: str = Field(index=True)
     release_date: str | None = None
-    material: Material
+    material: FiberMaterial
     width: int
     weight: float | None = None # g/m
     breaking_strength: float | None = None # kN
     stretch: str | None = None # like [{"kn":0, "percent": 0.0}, {"kn": 10, "percent": 14.97}]
     isa_certified: bool = False
     classification: Classification | None = None
+    isa_warning: ISAWarning | None = None
     colors: str | None = None # Comma separated list of colors
     price: float | None = None 
     currency: Currency | None = None # ISO 4217 currency code
