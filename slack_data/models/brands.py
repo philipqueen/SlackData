@@ -1,12 +1,14 @@
 from pydantic import computed_field
 from sqlmodel import Field, Relationship, SQLModel
 
+from slack_data.utilities.countries import Country
+
 class BaseBrands(SQLModel):
     """
     Base class for brands/manufacturers.
     """
     name: str = Field(index=True)
-    country: str | None = None
+    country: Country | None = None
     year_founded: int | None = None
     active: bool = True
     slackline_focused: bool = True

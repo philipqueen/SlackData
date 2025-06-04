@@ -2,6 +2,8 @@ from enum import Enum
 from pydantic import computed_field
 from sqlmodel import Field, Relationship, SQLModel
 
+from slack_data.utilities.currencies import Currency
+
 
 class Material(str, Enum):
     NYLON = "Nylon"
@@ -32,8 +34,10 @@ class BaseWebbing(SQLModel):
     isa_certified: bool = False
     classification: Classification | None = None
     colors: str | None = None # Comma separated list of colors
+    price: float | None = None 
+    currency: Currency | None = None # ISO 4217 currency code
     description: str | None = None
-    version:str | None = None # Version indicating which batch data is from TODO: how to keep track of this?
+    version: str | None = None # Version indicating which batch data is from TODO: how to keep track of this?
     notes: str | None = None
 
 class Webbing(BaseWebbing, table=True):
