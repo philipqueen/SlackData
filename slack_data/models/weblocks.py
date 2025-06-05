@@ -4,14 +4,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from slack_data.utilities.currencies import Currency
 from slack_data.utilities.isa_warnings import ISAWarning
+from slack_data.utilities.materials import MetalMaterial
 
-
-class MetalMaterial(str, Enum):
-    ALUMINUM = "Aluminum"
-    STEEL = "Steel"
-    STAINLESS_STEEL = "Stainless Steel"
-    TITANIUM = "Titanium"
-    OTHER = "Other"
 
 class FrontPin(str, Enum):
     PUSHPIN = "Push Pin"
