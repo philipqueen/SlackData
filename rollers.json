@@ -193,7 +193,7 @@
   },
   {
     "name": "Webbling Pulley",
-    "material": "Nylon (Polyamide)",
+    "material": "Aluminum",
     "weight": 67,
     "wll": null,
     "mbs": 15,
@@ -205,6 +205,6 @@
     "manufacturer": "Slack Inov",
     "price": 30.00,
     "price_unit": "EUR",
-    "roller_material": "Aluminum"
+    "roller_material": "Nylon (Polyamide)"
   }
 ]

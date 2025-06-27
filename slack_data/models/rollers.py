@@ -4,12 +4,13 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from slack_data.utilities.currencies import Currency
 from slack_data.utilities.isa_warnings import ISAWarning
-from slack_data.utilities.materials import MetalMaterial
+from slack_data.utilities.materials import MetalMaterial, RollerMaterial
 
 class SliderType(Enum):
     MovingPlates = "Moving plates"
     Carabiner = "Carabiner"
     LockingCarabiner = "Locking Carabiner"
+    Other = "Other"
 
 
 class BaseRoller(SQLModel):
@@ -19,8 +20,9 @@ class BaseRoller(SQLModel):
     name: str = Field(index=True)
     release_date: str | None = None
     material: MetalMaterial
+    roller_material: RollerMaterial
     slider_type: SliderType
-    width: tuple[float, float] # smallest in mm, largest in mm
+    width: str | None = None # smallest in mm, largest in mm
     weight: float | None = None # g
     breaking_strength: float | None = None # kN
     isa_certified: bool = False

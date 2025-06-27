@@ -34,3 +34,28 @@ class Currency(str, Enum):
     UAH = "UAH"  # Ukrainian Hryvnia
     USD = "USD"  # United States Dollar
     ZAR = "ZAR"  # South African Rand
+
+def get_currency(currency: str) -> Currency:
+    """
+    Convert the currency string to a Currency enum.
+    """
+    currency = currency.upper()
+    if currency in Currency.__members__:
+        return Currency[currency]
+    
+    for currency_member in Currency:
+        if currency_member.value in currency:
+            return currency_member
+
+    raise ValueError(f"Invalid currency: {currency}")
+    
+
+if __name__ == "__main__":
+    # Example usage
+    try:
+        print(get_currency("usd"))  # Output: Currency.USD
+        print(get_currency("EUR"))  # Output: Currency.EUR
+        print(get_currency("EURO"))
+        print(get_currency("xyz"))  # Raises ValueError
+    except ValueError as e:
+        print(e)
