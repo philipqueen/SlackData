@@ -8,7 +8,7 @@ from slack_data.models.brands import Brand, BrandCreate
 from slack_data.models.webbing import FiberMaterial, Webbing, WebbingCreate
 
 
-WEBBING_FILE = Path(__file__).parent.parent / "webbings.json"
+WEBBING_FILE = Path(__file__).parent.parent.parent / "webbings.json"
 
 def load_webbings_json() -> list[dict]:
     """
