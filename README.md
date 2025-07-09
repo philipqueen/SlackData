@@ -33,3 +33,4 @@ The project is still in it's early stages, so currently the only option is to ru
     - `fastapi dev main.py`
 4. Open browser and go to URL printed in terminal
     - Append `/docs` to see the interactive API docs
+    - Most likely [http://127.0.0.1:8000/docs]
