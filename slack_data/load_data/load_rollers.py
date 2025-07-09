@@ -5,7 +5,7 @@ from sqlmodel import select
 
 from slack_data.database import SessionDep
 from slack_data.models.brands import Brand, BrandCreate
-from slack_data.models.rollers import SliderType, Roller, RollerCreate
+from slack_data.models.rollers import BearingMaterial, LockType, SliderType, Roller, RollerCreate
 from slack_data.utilities.currencies import get_currency
 from slack_data.utilities.materials import MetalMaterial, RollerMaterial
 
@@ -51,7 +51,7 @@ def add_rollers_to_db(rollers: list[dict], session: SessionDep) -> None:
     for roller in rollers:
         brand_id = get_brand(session, roller)
 
-        if (currency := roller.get("currency")) is not None:
+        if (currency := roller.get("price_unit")) is not None:
             currency = get_currency(currency)
 
         roller_create = RollerCreate(
@@ -59,6 +59,8 @@ def add_rollers_to_db(rollers: list[dict], session: SessionDep) -> None:
             brand_id=brand_id,
             material=get_metal_material(str(roller.get("materialType", ""))),
             roller_material=get_roller_material(str(roller.get("roller_material", ""))),
+            lock_type=get_lock_type(str(roller.get("locking_type", ""))),
+            bearing_material=get_bearing_material(str(roller.get("bearing_material", "steel"))),
             width=roller.get("width", None),
             weight=float(roller.get("weight", 0)),
             breaking_strength=roller.get("mbs"),
@@ -148,6 +150,35 @@ def get_roller_material(roller_material: str) -> RollerMaterial:
     else:
         return RollerMaterial.OTHER
 
+def get_lock_type(lock_type: str) -> LockType:
+    """
+    Convert the lock type string to a LockType enum.
+    """
+    lock_type = lock_type.lower()
+    if "non-locking" in lock_type:
+        return LockType.Nonlocking
+    elif "screw lock" in lock_type or "screwlock" in lock_type:
+        return LockType.ScrewLock
+    elif "auto lock" in lock_type or "autolock" in lock_type:
+        return LockType.AutoLock
+    elif "twist lock" in lock_type or "twistlock" in lock_type:
+        return LockType.TwistLock
+    elif "magnetic lock" in lock_type or "magneticlock" in lock_type:
+        return LockType.MagneticLock
+    else:
+        return LockType.Other
+    
+def get_bearing_material(bearing_material: str) -> BearingMaterial:
+    """
+    Convert the bearing material string to a BearingMaterial enum.
+    """
+    bearing_material = bearing_material.lower()
+    if "stainless steel" in bearing_material:
+        return BearingMaterial.StainlessSteel
+    elif "steel" in bearing_material:
+        return BearingMaterial.Steel
+    else:
+        return BearingMaterial.Other
 
 def load_rollers(session: SessionDep) -> None:
     """

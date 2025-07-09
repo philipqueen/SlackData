@@ -12,6 +12,19 @@ class SliderType(Enum):
     LockingCarabiner = "Locking Carabiner"
     Other = "Other"
 
+class LockType(Enum):
+    Nonlocking = "Non-locking"
+    ScrewLock = "Screw Lock"
+    AutoLock = "Auto Lock"
+    TwistLock = "Twist Lock"
+    MagneticLock = "Magnetic Lock"
+    Other = "Other"
+
+class BearingMaterial(Enum):
+    StainlessSteel = "Stainless Steel"
+    Steel = "Steel"
+    Other = "Other"
+
 
 class BaseRoller(SQLModel):
     """
@@ -22,6 +35,8 @@ class BaseRoller(SQLModel):
     material: MetalMaterial
     roller_material: RollerMaterial
     slider_type: SliderType
+    lock_type: LockType
+    bearing_material: BearingMaterial
     width: str | None = None # smallest in mm, largest in mm
     weight: float | None = None # g
     breaking_strength: float | None = None # kN

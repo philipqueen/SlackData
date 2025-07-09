@@ -54,6 +54,7 @@ if __name__ == "__main__":
     # Example usage
     try:
         print(get_currency("usd"))  # Output: Currency.USD
+        print(get_currency("USD"))
         print(get_currency("EUR"))  # Output: Currency.EUR
         print(get_currency("EURO"))
         print(get_currency("xyz"))  # Raises ValueError
